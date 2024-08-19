@@ -3,12 +3,27 @@ import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import { fecthAllUsers } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
+import ModalAddNew from './ModalAddNew';
+import ModalEditUser from './ModalEditUser';
 
 const ListUsers = (props) => {
 
     const [listUsers, setListUsers] = useState([]);
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+
+    const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+    const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+    const [dataUserEdit, setDataUserEdit] = useState({});
+
+    const handleClose = () => {
+        setIsShowModalAddNew(false);
+        setIsShowModalEdit(false);
+    }
+
+    const handleUpdateUser = (user) => {
+        setListUsers([user, ...listUsers]);
+    }
 
     useEffect(() => {
         //call api
@@ -30,11 +45,20 @@ const ListUsers = (props) => {
 
     const handlePageClick = (event) => {
         getUsers(+event.selected + 1); // them + o dau de convert string --> number 
-        console.log(event);
+        //console.log(event);
+    }
+
+    const handleEditUser = (user) => {
+        setDataUserEdit(user);
+        setIsShowModalEdit(true);
     }
 
     //console.log(listUsers); // check user
     return (<>
+        <div className='my-3 add-user d-flex justify-content-between'>
+            <h5>List of users: </h5>
+            <button className='btn btn-primary' onClick={() => setIsShowModalAddNew(true)}>Add New User</button>
+        </div>
         <Table striped bordered hover>
             <thead>
                 <tr>
@@ -42,6 +66,7 @@ const ListUsers = (props) => {
                     <th>Email</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +77,10 @@ const ListUsers = (props) => {
                             <td>{item.email}</td>
                             <td>{item.first_name}</td>
                             <td>{item.last_name}</td>
+                            <td>
+                                <button className='btn btn-warning mx-3' onClick={() => handleEditUser(item)}>Edit</button>
+                                <button className='btn btn-danger'>Delete</button>
+                            </td>
                         </tr>
                     );
                 })}
@@ -77,7 +106,20 @@ const ListUsers = (props) => {
             activeClassName="active"
             renderOnZeroPageCount={null}
         />
-    </>)
-}
+
+        <ModalAddNew
+            show={isShowModalAddNew}
+            handleClose={handleClose}
+            handleUpdateUser={handleUpdateUser}
+        />
+
+        <ModalEditUser
+            show={isShowModalEdit}
+            handleClose={handleClose}
+            dataUserEdit={dataUserEdit}
+        />
+    </>
+    );
+};
 
 export default ListUsers;

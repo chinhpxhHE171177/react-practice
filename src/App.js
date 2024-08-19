@@ -3,31 +3,33 @@ import { Row } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Headers from './components/Header';
 import ListUsers from './components/ListUsers';
-import { useState } from 'react';
-import ModalAddNew from './components/ModalAddNew';
 import { sassFalse } from 'sass';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-
-  const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
-
-  const handleClose = () => {
-    setIsShowModalAddNew(false);
-  }
   return (
-    <div className='app-container'>
-      <Headers />
-      <Container>
-        <div className='my-3 add-user d-flex justify-content-between'>
-          <h5>List of users: </h5>
-          <button className='btn btn-primary' onClick={() => setIsShowModalAddNew(true)}>Add New User</button>
-        </div>
-        <ListUsers />
-      </Container>
-      <ModalAddNew
-        show={isShowModalAddNew}
-        handleClose={handleClose} />
-    </div>
+    <>
+      <div className='app-container'>
+        <Headers />
+        <Container>
+          <ListUsers />
+        </Container>
+      </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+    </>
   );
 }
 
